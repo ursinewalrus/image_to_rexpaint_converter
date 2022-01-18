@@ -1,0 +1,10 @@
+[tool.poetry]
+name = "RexPaintConverterAndImporter"
+version = "0.0.1"
+description = "Converts images to ascii and then into rexpaint .xp files"
+authors = ["Me"]
+
+[tool.poetry.dependencies]
+python = ">=3.9.0,<4"
+Pillow = "^9.0.0"
+nltk = "^3.6.7"
