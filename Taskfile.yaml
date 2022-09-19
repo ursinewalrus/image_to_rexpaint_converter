@@ -1,0 +1,17 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+  PROJ_PATH: '"$PWD"'
+
+tasks:
+  build:
+    desc: "Build the image"
+    cmds:
+      - docker build -t rexpaint-converter .
+  run-converter:
+    desc: "Runs the app. Pass the absolute path to the image you want to run against. First arg is file, second is scaling."
+    cmds:
+      - docker run --rm -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs rexpaint-converter {{.CLI_ARGS}}

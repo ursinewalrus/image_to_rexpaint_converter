@@ -2,9 +2,9 @@ from PIL.Image import Image
 from typing import Callable
 from functools import reduce
 
-from nltk import chunk
-from src.lib.types import *
 from typing import List
+
+from src.lib.types import CharSubRegionData, CharData
 
 
 def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionData]) -> CharData:
@@ -173,3 +173,10 @@ def generate_character_sub_region_data_non_overlapping_ranges(self, char_region 
 def greyscale_subRegionData(subRegionData: CharSubRegionData) -> CharSubRegionData:
     greyscale_val = (subRegionData["pixel_sums"][0] + subRegionData["pixel_sums"][1] + subRegionData["pixel_sums"][2]) // 3
     return {"pixel_sums":(greyscale_val,greyscale_val,greyscale_val), "cords":subRegionData["cords"] }
+
+def get_avg_subRegionColor(subRegionData: List[CharSubRegionData]) -> tuple[int, int, int]:
+    r_avg = reduce(lambda acc, c: c["pixel_sums"][0] + acc, subRegionData, 0) // 9
+    g_avg = reduce(lambda acc, c: c["pixel_sums"][1] + acc, subRegionData, 0) // 9
+    b_avg = reduce(lambda acc, c: c["pixel_sums"][2] + acc, subRegionData, 0) // 9
+    return (r_avg,g_avg,b_avg)
+

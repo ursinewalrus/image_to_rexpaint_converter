@@ -1,5 +1,5 @@
 {
-    "simple": {
+    "simple_char_gradient_str": {
         "AAAAAAAAA": 160,
         "DDDDEDCDC": 9786,
         "EFEEDEDED": 9787,
@@ -237,7 +237,7 @@
         "CDCDHDCDC": 9632,
         "BCBCACBCB": 9633
     },
-    "granular": {
+    "granular_char_gradient_str": {
         "AAAAAAAAA": 160,
         "KLKKOKIKI": 9786,
         "OROPLPMPM": 9787,
