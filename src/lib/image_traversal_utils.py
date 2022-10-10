@@ -28,10 +28,6 @@ def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionD
             "summed_granular_gradient": summed_granular_gradient
             }
 
-def get_chars_per_row(image, chunk_size):
-    im_w = image.size[0]
-    cropped_w = im_w - (im_w % chunk_size)
-    return cropped_w // chunk_size
 
 def image_chunk_meta_mapper(fn: Callable, image: Image, chunk_size: int):
     im_w, im_y = image.size[0], image.size[1]

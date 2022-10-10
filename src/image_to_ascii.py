@@ -26,7 +26,12 @@ class ImageToAscii:
         self.granularity: ImageGranularity = granularity
         self.cache: Dict[CharData, CharData] = {}
         self.use_cache = use_cache
-        self.converted_row_len = get_chars_per_row(self.image, self.reduce_ratio)
+        self.converted_row_len = self.get_chars_per_row(self.image, self.reduce_ratio)
+
+    def get_chars_per_row(image, chunk_size):
+        im_w = image.size[0]
+        cropped_w = im_w - (im_w % chunk_size)
+        return cropped_w // chunk_size
 
     def convert_and_package_for_export(self) -> ConvertedPackagedImageData:
         converted_image: List[ProcessedImageChunkData] = self.convert_image_to_ascii()
@@ -45,6 +50,7 @@ class ImageToAscii:
                 row_chars = ""
 
     def convert_image_to_ascii(self) -> List[ProcessedImageChunkData]:
+        # make this 2d, rotate it should alter output orientation
         chunk_data: List[List[CharSubRegionData]] = image_chunk_meta_mapper(generate_character_sub_region_data,
                                                                             self.image, self.reduce_ratio)
         greyscaled_chunk_data = []
