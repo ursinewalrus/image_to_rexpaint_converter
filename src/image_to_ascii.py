@@ -10,7 +10,7 @@ import json
 class ImageToAscii:
 
     def __init__(self, image_path: str, char_map_filepath: str, reduce_ratio: int,
-                 granularity: str = "simple_char_gradient_str", use_cache: bool = True):
+                 granularity: str = ImageGranularity.SIMPLE, use_cache: bool = True):
         self.image: Image = PIL.Image.open(image_path)
         # with open(char_map_filepath) as map_data:
         #     self.map_data = json.load(map_data)
@@ -21,9 +21,9 @@ class ImageToAscii:
             reduce_ratio = 3
         self.reduce_ratio: int = reduce_ratio
 
-        if granularity != "granular_char_gradient_str":
-            granularity = "simple_char_gradient_str"
-        self.granularity: str = granularity
+        if granularity != ImageGranularity.GRANULAR:
+            granularity = ImageGranularity.SIMPLE
+        self.granularity: ImageGranularity = granularity
         self.cache: Dict[CharData, CharData] = {}
         self.use_cache = use_cache
         self.converted_row_len = get_chars_per_row(self.image, self.reduce_ratio)

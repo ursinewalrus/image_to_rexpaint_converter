@@ -1,5 +1,7 @@
 from typing import Tuple, TypedDict, List
 
+from pip._internal.utils.misc import enum
+
 
 class CharSubRegionData(TypedDict):
     pixel_sums: Tuple[int, int, int]
@@ -25,3 +27,8 @@ class ConvertedPackagedImageData:
     def __init__(self, converted_image: List[ProcessedImageChunkData], row_len: int):
         self.converted_image: List[ProcessedImageChunkData] = converted_image
         self.row_len = row_len
+
+
+class ImageGranularity(enum):
+    GRANULAR = "granular_char_gradient_str"
+    SIMPLE = "simple_char_gradient_str"
