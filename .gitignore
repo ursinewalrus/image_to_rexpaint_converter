@@ -1,3 +1,7 @@
 *.pyc
 *.jpg
 *.png
+*inputs/
+*outputs/
+.idea/
+.vscode/

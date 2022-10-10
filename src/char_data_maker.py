@@ -54,3 +54,5 @@ class CharDataMaker:
             packaged_vals["granular_char_gradient_str"] = zipper("granular_char_gradient_str", char_data, char_codes)
 
         return packaged_vals
+
+

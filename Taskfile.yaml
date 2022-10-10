@@ -14,4 +14,13 @@ tasks:
   run-converter:
     desc: "Runs the app. Pass the absolute path to the image you want to run against. First arg is file, second is scaling."
     cmds:
-      - docker run --rm -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs rexpaint-converter {{.CLI_ARGS}}
+      - |
+        read -p "Image or image dir to run convert on " IMAGE_DIR
+        read -p "Pixel side length of chunks, min 3, smaller = better resolution " SCALING
+        docker run --rm -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs -v {{.PROJ_PATH}}/$IMAGE_DIR:/rexpaint/inputs rexpaint-converter $SCALING
+  get-image:
+    - |
+      read -p "Dir where images to be converted are" IMAGE_DIR;
+      docker run -it --entrypoint /bin/bash -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs -v {{.PROJ_PATH}}/$IMAGE_DIR:/rexpaint/inputs rexpaint-converter
+  build-args:
+    desc: "CLI args you can pass to the container are"
