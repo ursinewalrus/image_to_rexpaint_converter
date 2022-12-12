@@ -34,8 +34,14 @@ class XPFileMaker:
         self.image_data: List[ProcessedImageChunkData] = json_data.converted_image
         self.row_len = json_data.row_len
         self.binary_file_contents = self.construct_xp_file_binary()
-        with open(f"/rexpaint/outputs/{outputFile}.xp", "w+") as f:
-            f.write(self.binary_file_contents)
+
+        # dont remember why this works at all
+        to_write = int(self.binary_file_contents, 2).to_bytes((len(self.binary_file_contents) + 7) //8, 'big')
+        xp_file = gzip.open(f"/rexpaint/outputs/{outputFile}.xp", "wb")
+        xp_file.write(to_write)
+
+        # with open(f"/rexpaint/outputs/{outputFile}.xp", "w+") as f:
+        #     f.write(self.binary_file_contents)
 
     def get_json_data(self):
         return self.image_data

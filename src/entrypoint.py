@@ -24,7 +24,7 @@ for image_name in os.listdir("./inputs/"):
         image_as_json: ConvertedPackagedImageData = ItA.convert_and_package_for_export()
 
         xpFileMaker = XPFileMaker(image_as_json, image_name.split(".")[0])
-        print(xpFileMaker.construct_xp_file_binary())
+        # print(xpFileMaker.construct_xp_file_binary())
         ItA.print_ascii_output()
 
 
