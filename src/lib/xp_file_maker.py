@@ -16,7 +16,6 @@ B│  │ foreground color red (8)
 import string
 from typing import List
 import gzip
-
 from src.lib.types import ConvertedPackagedImageData, ProcessedImageChunkData
 
 # f = open("raw_binary_of_sheep.txt", "r" )
@@ -47,8 +46,9 @@ class XPFileMaker:
         return self.image_data
 
     def little_endian_convert(self, num: int, byte_num: int=4) -> bytes:
-        bin_version = format(num, f"0{byte_num * 8}b")
-        return bin_version[-8:]+bin_version[:-8]
+        bin = format(num, f"0{byte_num * 8}b")
+        lil_endian = bin[24:] + bin[16:24] + bin[8:16] + bin[:8]
+        return lil_endian
 
     def construct_xp_file_binary(self) -> string:
         binary_string = ""
@@ -62,12 +62,17 @@ class XPFileMaker:
         im_height = len(self.image_data) // self.row_len
         binary_string += self.little_endian_convert(im_height)
 
+        # rexpaint needs this rotated or whatnot so we 2d it, transpose it, re-flatten it
+        matrixed_char_data = [self.image_data[i:i+self.row_len] for i in (range(len(self.image_data)))[::self.row_len]]
+        rotated_data = [[matrixed_char_data[row][col] for row in range(len(matrixed_char_data))] for col in range(len(matrixed_char_data[0]))]
+        re_flattened_rotated_data = [item for sublist in rotated_data for item in sublist]
+
         # now we can just loop through all the chars and write them...
-        for charData in self.image_data:
+        for charData in re_flattened_rotated_data:
             charData: ProcessedImageChunkData
             # ascii code, 32 little endian - very likely wrong
             # character_code = struct.pack('<Q', charData.character)
-            binary_string += self.little_endian_convert(charData.character)
+            binary_string += self.little_endian_convert(charData.character_rexpaint)
             # foreground(only atm)colors - likely wrong also
             for color in charData.foreground_color:
                 binary_string += format(color, "08b")

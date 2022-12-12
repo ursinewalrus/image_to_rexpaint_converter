@@ -16,8 +16,9 @@ class CharData(TypedDict):
 
 
 class ProcessedImageChunkData():
-    def __init__(self, character, location, foreground_color, background_color):
-        self.character: int = character
+    def __init__(self, character_literal, character_rexpaint, location, foreground_color, background_color):
+        self.character_literal: int = character_literal
+        self.character_rexpaint: int = character_rexpaint
         self.location: str = location
         self.foreground_color: Tuple[int, int, int] = foreground_color
         self.background_color: Tuple[int, int, int] = background_color

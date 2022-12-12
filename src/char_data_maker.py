@@ -49,9 +49,13 @@ class CharDataMaker:
         packaged_vals = {}
         with open(self.character_map, 'r') as f:
             lines = f.readlines()
-            char_codes = [int(l.strip().split(" ")[1]) for l in lines] # NEED 1 FOR IF PRINTING HERE, 0 FOR IF FOR EXPORT??
-            packaged_vals["simple_char_gradient_str"] = zipper("simple_char_gradient_str", char_data, char_codes)
-            packaged_vals["granular_char_gradient_str"] = zipper("granular_char_gradient_str", char_data, char_codes)
+            literal_and_rexpaint_codes = [(int(l.strip().split(" ")[1]),int(l.strip().split(" ")[0])) for l in lines]
+            packaged_vals["simple_char_gradient_str"] = zipper("simple_char_gradient_str", char_data, literal_and_rexpaint_codes)
+            packaged_vals["granular_char_gradient_str"] = zipper("granular_char_gradient_str", char_data, literal_and_rexpaint_codes)
+
+            # literal_char_codes = [int(l.strip().split(" ")[1]) for l in lines] # NEED 1 FOR IF PRINTING HERE, 0 FOR IF FOR EXPORT??
+            # packaged_vals["simple_char_gradient_str"] = zipper("simple_char_gradient_str", char_data, literal_char_codes)
+            # packaged_vals["granular_char_gradient_str"] = zipper("granular_char_gradient_str", char_data, literal_char_codes)
 
         return packaged_vals
 

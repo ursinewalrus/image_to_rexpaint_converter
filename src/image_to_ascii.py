@@ -43,7 +43,7 @@ class ImageToAscii:
         row_chars = ""
         for i in range(len(processed_data)):
             color_str = ";".join(map(str, list(processed_data[i].foreground_color))) + "m"
-            row_chars += "\x1b[38;2;" + color_str + chr(processed_data[i].character) + "\x1b[0m "
+            row_chars += "\x1b[38;2;" + color_str + chr(processed_data[i].character_literal) + "\x1b[0m "
             # row_chars+=chr(processed_data[i]["character"])+" "
             if (i + 1) % self.converted_row_len == 0:
                 print(row_chars)
@@ -65,17 +65,17 @@ class ImageToAscii:
                 lowest_dist = self.cache[im_chunk_data[self.granularity]]
                 cache_hits += 1
             else:
-                for char in self.char_map[self.granularity]:
-                    dist = nltk.edit_distance(im_chunk_data[self.granularity], char)
+                for lexical_char_rep in self.char_map[self.granularity]:
+                    dist = nltk.edit_distance(im_chunk_data[self.granularity], lexical_char_rep)
                     if dist < lowest_dist[0][0]:
-                        lowest_dist = [(dist, self.char_map[self.granularity][char])]
+                        lowest_dist = [(dist, self.char_map[self.granularity][lexical_char_rep])]
                     elif dist == lowest_dist[0][0]:
-                        lowest_dist.append((dist, self.char_map[self.granularity][char]))
+                        lowest_dist.append((dist, self.char_map[self.granularity][lexical_char_rep]))
                 self.cache[im_chunk_data[self.granularity]] = lowest_dist
             # chosen = random.choice(lowest_dist)
             # lexical_rep = {"character": chosen[1]}
-
-            lexical_rep = ProcessedImageChunkData(lowest_dist[0][1],
+            lexical_rep = ProcessedImageChunkData( lowest_dist[0][1][0],
+                                                   lowest_dist[0][1][1],
                                                   0,
                                                   get_avg_subRegionColor(chunk_data[idx]),
                                                   (0,0,0))
