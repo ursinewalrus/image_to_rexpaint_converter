@@ -23,12 +23,12 @@ class ImageToAscii:
 
         if granularity != ImageGranularity.GRANULAR:
             granularity = ImageGranularity.SIMPLE
-        self.granularity: ImageGranularity = granularity
+        self.granularity: ImageGranularity = granularity.value
         self.cache: Dict[CharData, CharData] = {}
         self.use_cache = use_cache
         self.converted_row_len = self.get_chars_per_row(self.image, self.reduce_ratio)
 
-    def get_chars_per_row(image, chunk_size):
+    def get_chars_per_row(self, image, chunk_size):
         im_w = image.size[0]
         cropped_w = im_w - (im_w % chunk_size)
         return cropped_w // chunk_size

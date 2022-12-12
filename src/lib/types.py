@@ -1,6 +1,6 @@
 from typing import Tuple, TypedDict, List
 
-from pip._internal.utils.misc import enum
+from enum import Enum
 
 
 class CharSubRegionData(TypedDict):
@@ -29,6 +29,6 @@ class ConvertedPackagedImageData:
         self.row_len = row_len
 
 
-class ImageGranularity(enum):
+class ImageGranularity(Enum):
     GRANULAR = "granular_char_gradient_str"
     SIMPLE = "simple_char_gradient_str"
