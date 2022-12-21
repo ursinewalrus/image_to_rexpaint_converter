@@ -33,3 +33,11 @@ class ConvertedPackagedImageData:
 class ImageGranularity(Enum):
     GRANULAR = "granular_char_gradient_str"
     SIMPLE = "simple_char_gradient_str"
+
+class AdjacentChunks(TypedDict):
+    above: CharData
+    below: CharData
+    left: CharData
+    right: CharData
+
+

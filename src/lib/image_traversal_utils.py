@@ -1,3 +1,5 @@
+import math
+
 from PIL.Image import Image
 from typing import Callable
 from functools import reduce
@@ -13,9 +15,34 @@ def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionD
 
     gradient_squasher = lambda squash_factor: round((csrd["pixel_sums"][0] / 255) * (squash_factor - 1))
 
+    # get avg greyscale val for whole subregion for scaling subsequent vals, 0.0 is pure black, 255 pure white
+    avg_greyscale_val_of_char = reduce(lambda acc, char_chunk: acc+char_chunk["pixel_sums"][0], greyscaled_char_data, 0  ) / 9
+    # print("AVG GRY IS", avg_greyscale_val_of_char)
+    # should use the fraction of this to get another scale to apply to our chars maps
+    # so if our num is 51 our ration is 4/5ths pure black, take our simple or complex val and do...something with it
+    # AVG is 127, exact halfway beween all white and all black - keep our original result form teh gradient_squasher
+    # AVG is 0, all black(AAAAAAAAA) - divide result out of that by 2, whole char is represented as a darker string(lower letters)
+    # AGG is 255 all white (HHHHHHHHH or ZZZZZZZZZ) multiply result out by 2, whole char is represented as a lighter string(higher letters)
+    # - MUST BE DONE OFF THE AVG OF THE ENTIRE SET OF CHARS MAYBE???? DO SOME FANCY MATH TO GET NEW BOUNDS??
+    # likely too much squash
+    brightness_scaler = 1
+    if avg_greyscale_val_of_char > 128:
+        brightness_scaler = avg_greyscale_val_of_char / 128
+    elif avg_greyscale_val_of_char < 127:
+        brightness_scaler = .5 + avg_greyscale_val_of_char / 256
+
+    # print("***")
+    # print(avg_greyscale_val_of_char)
+    # print(brightness_scaler)
     for csrd in greyscaled_char_data:
+
         offset = 65 # A
-        simple_val = gradient_squasher(8) 
+        simple_val = gradient_squasher(8)
+        if brightness_scaler > 1:
+            simple_val = min(math.ceil(simple_val * brightness_scaler),7)
+        else:
+            simple_val = min(math.floor(simple_val * brightness_scaler),7)
+
         complex_val = gradient_squasher(26)
         simple_char_gradient_str += chr(offset + simple_val)
         granular_char_gradient_str += chr(offset + complex_val)

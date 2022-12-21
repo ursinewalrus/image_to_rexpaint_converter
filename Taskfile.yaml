@@ -18,7 +18,8 @@ tasks:
         read -p "Image or image dir to run convert on " IMAGE_DIR
         read -p "Pixel side length of chunks, min 3, smaller = better resolution " SCALING
         read -p "G: More granular character selections S: Simpler character selections " GRANULARITY
-        docker run --rm -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs -v {{.PROJ_PATH}}/$IMAGE_DIR:/rexpaint/inputs rexpaint-converter $SCALING $GRANULARITY
+        read -p "Black and white terminal output: y/N  " BW
+        docker run --rm -v {{.PROJ_PATH}}/outputs:/rexpaint/outputs -v {{.PROJ_PATH}}/$IMAGE_DIR:/rexpaint/inputs rexpaint-converter $SCALING $GRANULARITY $BW
   get-image:
     - |
       read -p "Dir where images to be converted are" IMAGE_DIR;

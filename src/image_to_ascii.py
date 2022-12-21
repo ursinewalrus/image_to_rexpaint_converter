@@ -10,7 +10,7 @@ import json
 class ImageToAscii:
 
     def __init__(self, image_path: str, char_map_filepath: str, reduce_ratio: int,
-                 granularity: str = ImageGranularity.SIMPLE, use_cache: bool = True):
+                 granularity: str = ImageGranularity.SIMPLE, black_and_white: bool = False):
         self.image: Image = PIL.Image.open(image_path)
         # with open(char_map_filepath) as map_data:
         #     self.map_data = json.load(map_data)
@@ -25,7 +25,8 @@ class ImageToAscii:
             granularity = ImageGranularity.SIMPLE
         self.granularity: ImageGranularity = granularity.value
         self.cache: Dict[CharData, CharData] = {}
-        self.use_cache = use_cache
+        self.use_cache = True
+        self.black_and_white = black_and_white
         self.converted_row_len = self.get_chars_per_row(self.image, self.reduce_ratio)
 
     def get_chars_per_row(self, image, chunk_size):
@@ -43,7 +44,10 @@ class ImageToAscii:
         row_chars = ""
         for i in range(len(processed_data)):
             color_str = ";".join(map(str, list(processed_data[i].foreground_color))) + "m"
-            row_chars += "\x1b[38;2;" + color_str + chr(processed_data[i].character_literal) + "\x1b[0m "
+            if not self.black_and_white:
+                row_chars += "\x1b[38;2;" + color_str + chr(processed_data[i].character_literal) + "\x1b[0m "
+            else:
+                row_chars +=chr(processed_data[i].character_literal)+" "
             # row_chars+=chr(processed_data[i]["character"])+" "
             if (i + 1) % self.converted_row_len == 0:
                 print(row_chars)
@@ -90,3 +94,51 @@ class ImageToAscii:
             # lexical_reps.append({"character": lowest_dist[0][1]})
         print("cache hits", cache_hits)
         return lexical_reps
+
+    # converted_row_len
+    def post_processing_edge_adder(self,  ascii_image_data: List[ProcessedImageChunkData]) -> List[ProcessedImageChunkData]:
+        """
+        initial pass:
+            var: region_averaging_size(yeech...): how for to look on each side of each chunk to determine "regions"
+               average_distance_diff(edit_distance) between chunks within a region span: get average of each pair, then everage the averages?
+               average_RGB_diff distance between chunks with a region span: get average of each pair, then everage the averages?
+
+            all above - record, get the new, total image average
+
+            distance_threshhold: fraction or % of <dist between 2 chunks>/average_distance_diff that determines when to call the diffeerence between two blocks an edge,
+            RGB_threshold: fraction or % of <dist between 2 chunks>/average_RGB_diff that determines when to call the diffeerence between two blocks an edge,
+        second pass:
+
+
+            sub in new chars for edges where edges detected, going through and calulcating diffs between chunks in all dirs and determining if
+
+            dist avg: 5, current 4, threshold .5 |   abs(5-4) / 5 = .2  < .5 - no edge
+            dist ave: 5, current 8, thrshold .5  |   abs(5/8) / 5 = .6 > .5  - no edge
+
+            Can only be an edge if it is exceded in 2 or less dirs, more than that and its more likely an island
+
+            if we detect an edge to our current right, when we move over one we should expect to see an edge on the next one overs right.
+            Unclear solution here as an edge should only be 1 char thick
+
+        char substitution:
+            placement - either all shifted one dir or random?
+            char: for start perhaps just "." - also perhaps blank spaces, preset edge chars, derive new char from a combo of the edge zone
+
+
+        NOTE: FOR THE CHAR MAPPING JSON MAYBE SUM UP THE BLACK SPACE ON EACH CHAR< DIVIDE It oR WHAtnot TO GET AN AVG DARKNESS AND SET
+        # THAT AS THE LEXICAL STRING CHAR USED FOR ITS PATTERN, SO THAT CHARS WITH LESS IN THEM WILL BE SET AS FOR LIGHTER SECTIONS
+        IN GENERAL, BASICALLY INCORPOARTING A BIT OF THE OLD TRICK FOR BASIC ASCII SGTUFF
+
+        """
+
+        region_detection_span = 2 # should be class var
+        distance_threshold = .5 # should be a class var
+        RGB_threshold = .5 # dunno what makes sense here either
+
+        # for idx,chunk in enumerate(ascii_image_data):
+
+
+        pass
+
+    def get_adjacent_chunks(self, idx, span, ascii_image_data ) -> AdjacentChunks:
+        pass
