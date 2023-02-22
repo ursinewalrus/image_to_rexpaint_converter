@@ -16,7 +16,7 @@ def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionD
     gradient_squasher = lambda squash_factor: round((csrd["pixel_sums"][0] / 255) * (squash_factor - 1))
 
     # get avg greyscale val for whole subregion for scaling subsequent vals, 0.0 is pure black, 255 pure white
-    avg_greyscale_val_of_char = reduce(lambda acc, char_chunk: acc+char_chunk["pixel_sums"][0], greyscaled_char_data, 0  ) / 9
+    # avg_greyscale_val_of_char = reduce(lambda acc, char_chunk: acc+char_chunk["pixel_sums"][0], greyscaled_char_data, 0  ) / 9
     # print("AVG GRY IS", avg_greyscale_val_of_char)
     # should use the fraction of this to get another scale to apply to our chars maps
     # so if our num is 51 our ration is 4/5ths pure black, take our simple or complex val and do...something with it
@@ -26,10 +26,10 @@ def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionD
     # - MUST BE DONE OFF THE AVG OF THE ENTIRE SET OF CHARS MAYBE???? DO SOME FANCY MATH TO GET NEW BOUNDS??
     # likely too much squash
     brightness_scaler = 1
-    if avg_greyscale_val_of_char > 128:
-        brightness_scaler = avg_greyscale_val_of_char / 128
-    elif avg_greyscale_val_of_char < 127:
-        brightness_scaler = .5 + avg_greyscale_val_of_char / 256
+    # if avg_greyscale_val_of_char > 128:
+    #     brightness_scaler = avg_greyscale_val_of_char / 128
+    # elif avg_greyscale_val_of_char < 127:
+    #     brightness_scaler = .5 + avg_greyscale_val_of_char / 256
 
     # print("***")
     # print(avg_greyscale_val_of_char)
@@ -38,10 +38,10 @@ def char_string_representation_reducer(greyscaled_char_data: List[CharSubRegionD
 
         offset = 65 # A
         simple_val = gradient_squasher(8)
-        if brightness_scaler > 1:
-            simple_val = min(math.ceil(simple_val * brightness_scaler),7)
-        else:
-            simple_val = min(math.floor(simple_val * brightness_scaler),7)
+        # if brightness_scaler > 1:
+        #     simple_val = min(math.ceil(simple_val * brightness_scaler),7)
+        # else:
+        #     simple_val = min(math.floor(simple_val * brightness_scaler),7)
 
         complex_val = gradient_squasher(26)
         simple_char_gradient_str += chr(offset + simple_val)
